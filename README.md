@@ -1,36 +1,92 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Quid Invoice Management System
 
-## Getting Started
+A full-stack Next.js application for managing PDF invoice uploads with real-time processing status updates. Built with TypeScript, React, and Tailwind CSS.
 
-First, run the development server:
+## Features
 
+- **Multi-file PDF Upload** - Drag-and-drop interface with file validation
+- **Real-time Processing Updates** - Live status updates with polling mechanism
+- **Comprehensive Invoice Management** - Pagination, sorting, filtering, and search
+- **Simulated Processing** - 15-45 second processing simulation with 80% success rate
+- **Responsive Design** - Clean, modern UI that works on all devices
+- **Type Safety** - Full TypeScript implementation throughout
+- **In-memory Storage** - Simple data persistence for development/demo purposes
+
+## Tech Stack
+
+- **Frontend & Backend**: Next.js 14 with App Router
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS
+- **File Storage**: Local filesystem
+- **Database**: In-memory storage (Map-based)
+- **Icons**: Heroicons (SVG)
+
+## Prerequisites
+
+Before you begin, ensure you have the following installed:
+
+- **Node.js** (version 18.0 or higher)
+- **npm** (comes with Node.js)
+- **Git** (for cloning the repository)
+
+## Quick Start
+
+### 1. Clone the Repository
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone <repository-url>
+cd invoice-management
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. Install Dependencies
+```bash
+npm install
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 3. Create Required Directories
+```bash
+mkdir uploads
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 4. Start Development Server
+```bash
+npm run dev
+```
 
-## Learn More
+### 5. Open in Browser
+Navigate to [http://localhost:3000](http://localhost:3000)
 
-To learn more about Next.js, take a look at the following resources:
+You should see the Invoice Management System running!
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## API Documentation
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+| Endpoint | Method | Description | Parameters | Response |
+|----------|--------|-------------|------------|----------|
+| `/api/invoices` | GET | Get paginated list of invoices with filtering and sorting | `page` (number), `limit` (number), `sortBy` (string), `sortOrder` (asc/desc), `status` (string), `search` (string) | `{ data: Invoice[], total: number, page: number, limit: number }` |
+| `/api/invoices/upload` | POST | Upload multiple PDF files | Form data with `files` field | `{ success: boolean, invoiceIds: string[], message: string }` |
+| `/api/invoices/:id` | GET | Get single invoice by ID | `id` in URL path | `Invoice` object with full details |
 
-## Deploy on Vercel
+### Query Parameters for GET /api/invoices
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `page` | number | 1 | Page number for pagination |
+| `limit` | number | 10 | Number of items per page |
+| `sortBy` | string | uploadDate | Sort field: uploadDate, amount, clientName, fileName |
+| `sortOrder` | string | desc | Sort direction: asc or desc |
+| `status` | string | - | Filter by status: Pending, Processing, Processed, Failed |
+| `search` | string | - | Search in fileName or clientName |
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Invoice Object Structure
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | string | Unique identifier (UUID) |
+| `fileName` | string | Original uploaded file name |
+| `fileSize` | number | File size in bytes |
+| `clientName` | string | Mock client name |
+| `amount` | number | Mock invoice amount |
+| `uploadDate` | Date | Timestamp of upload |
+| `status` | string | Current status: Pending, Processing, Processed, Failed |
+| `filePath` | string | Stored file path |
+| `processingStartTime` | Date | When processing started (optional) |
+| `processingEndTime` | Date | When processing finished (optional) |
